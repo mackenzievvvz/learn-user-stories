@@ -99,4 +99,32 @@ export class Bank implements BankType {
         account.balance += amount;
         return account.balance;
     }
+
+    /** withdraws money into an account
+     * 
+     * @param username - username
+     * @param accountNumber - account number
+     * @param amount - amount to withdraw
+     * @returns the new balance
+     */
+    withdraw(username:string, accountNumber: number, amount: number): number {
+        if(!this.isUsernameExisits(username)) {
+            throw new Error('User not found');
+        }
+        let account = this.findAccountById(accountNumber);
+        if(!account) {
+            throw new Error('Account not found');
+        }
+        if(!this.canAccessAccount(username, accountNumber)) {
+            throw new Error('Unauthorized access');
+        }
+        if(!this.positiveAmount(amount)) {
+            throw new Error('Invalid amount, must be positive');
+        }
+        if(account.balance < amount) {
+            throw new Error('Insufficient funds');
+        }
+        account.balance -= amount;
+        return account.balance;
+    }
 }

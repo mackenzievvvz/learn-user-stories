@@ -112,3 +112,78 @@ try {
         console.log('deposit: Scenario 5 failed');
     }
 }
+
+
+// --------------------------------------------
+//              TEST WITHDRAWAL
+// --------------------------------------------
+
+// Scenario 1: successful withdrawal
+try {
+    let balance = bank.withdraw('user1', 1234567890, 500);
+    if (balance !== 5000) {throw new Error();}
+    console.log('withdrawal: Scenario 1 passed');
+} catch(e) {
+    console.log('withdrawal: Scenario 1 failed');
+}
+
+// Scenario 2: unsuccessful withdrawal due to invalid username
+try {
+    bank.withdraw('user3', 1234567890, 500);
+    console.log('withdrawal: Scenario 2 failed');
+} catch(e) {
+    if (e instanceof Error && e.message === 'User not found') {
+        console.log('withdrawal: Scenario 2 passed');
+    } else {
+        console.log('withdrawal: Scenario 2 failed');
+    }
+}
+
+// Scenario 3: unsuccessful withdrawal due to account not found
+try {
+    bank.withdraw('user1', 1111111111, 500);
+    console.log('withdrawal: Scenario 3 failed');
+} catch(e) {
+    if (e instanceof Error && e.message === 'Account not found') {
+        console.log('withdrawal: Scenario 3 passed');
+    } else {
+        console.log('withdrawal: Scenario 3 failed');
+    }
+}
+
+// Scenario 4: unsuccessful withdrawal due to account not belonging to user
+try {
+    bank.withdraw('user2', 1234567891, 500);
+    console.log('withdrawal: Scenario 4 failed');
+} catch(e) {
+    if (e instanceof Error && e.message === 'Unauthorized access') {
+        console.log('withdrawal: Scenario 4 passed');
+    } else {
+        console.log('withdrawal: Scenario 4 failed');
+    }
+}
+
+// Senario 5: unsuccessful withdrawal due to negative amount
+try {
+    bank.withdraw('user1', 1234567891, -10);
+    console.log('withdrawal: Scenario 5 failed');
+} catch(e) {
+    if (e instanceof Error && e.message === 'Invalid amount, must be positive') {
+        console.log('withdrawal: Scenario 5 passed');
+    } else {
+        console.log('withdrawal: Scenario 5 failed');
+    }
+}
+
+// Senario 6: unsuccessful withdrawal due to insufficient balance
+try {
+    bank.withdraw('user1', 1234567890, 6000);
+    console.log('withdrawal: Scenario 6 failed');
+} catch(e) {
+    if (e instanceof Error && e.message === 'Insufficient funds') {
+        console.log('withdrawal: Scenario 6 passed');
+    }
+    else {
+        console.log('withdrawal: Scenario 6 failed');
+    }
+}
