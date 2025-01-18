@@ -97,6 +97,7 @@ export class Bank implements BankType {
             throw new Error('Invalid amount, must be positive');
         }
         account.balance += amount;
+        console.log("successful deposit!");
         return account.balance;
     }
 
@@ -125,6 +126,28 @@ export class Bank implements BankType {
             throw new Error('Insufficient funds');
         }
         account.balance -= amount;
+        console.log("successful withdrawal!");
+        return account.balance;
+    }
+
+    /** gets the balance of an account
+     * 
+     * @param username - username
+     * @param accountNumber - account number
+     * @returns the balance
+     */
+    getBalance(username: string, accountNumber: number): number {
+        if(!this.isUsernameExisits(username)) {
+            throw new Error('User not found');
+        }
+        let account = this.findAccountById(accountNumber);
+        if(!account) {
+            throw new Error('Account not found');
+        }
+        if(!this.canAccessAccount(username, accountNumber)) {
+            throw new Error('Unauthorized access');
+        }
+        console.log('successful balance check:', account.balance);
         return account.balance;
     }
 }
