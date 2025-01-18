@@ -22,7 +22,7 @@ export class Bank implements BankType {
     /**
      * 
      * @param id - account id
-     * @returns - true if account id ezists, false otherwise
+     * @returns - true if account id exists, false otherwise
      */
     private findAccountById(id: number): AccountType | undefined {
         return this.accounts.find(account => account.id === id);
@@ -36,7 +36,17 @@ export class Bank implements BankType {
         return this.usernames.includes(username);
     }
 
-    /**
+    private canAccessAccount(username:string, accountNumber: number): boolean {
+        let acc = this.findAccountById(accountNumber);
+        if(acc?.username === username) {
+            return true;
+        }
+        return false;
+    }
+
+    private positiveAmount = (amount: number): boolean => amount > 0;
+
+    /** creates an account 
      * 
      * @param username 
      * @param age 
@@ -58,9 +68,35 @@ export class Bank implements BankType {
         }
         const account: AccountType = {
             id: accountNumber,
-            balance: 0
+            balance: 0,
+            username: username
         };
         this.accounts.push(account);
         return account;
+    }
+
+    /** deposits money into an account
+     * 
+     * @param username - username
+     * @param accountNumber - account number
+     * @param amount - amount to deposit
+     * @returns the new balance
+     */
+    deposit(username:string, accountNumber: number, amount: number): number {
+        if(!this.isUsernameExisits(username)) {
+            throw new Error('User not found');
+        }
+        let account = this.findAccountById(accountNumber);
+        if(!account) {
+            throw new Error('Account not found');
+        }
+        if(!this.canAccessAccount(username, accountNumber)) {
+            throw new Error('Unauthorized access');
+        }
+        if(!this.positiveAmount(amount)) {
+            throw new Error('Invalid amount, must be positive');
+        }
+        account.balance += amount;
+        return account.balance;
     }
 }

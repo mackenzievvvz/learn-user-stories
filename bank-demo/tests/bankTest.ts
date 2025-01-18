@@ -1,47 +1,114 @@
 import { Bank } from '../src/bank';
 
-const accounts = [{ id: 1234567890, balance: 5000 },
-{ id: 1234567891, balance: 10000 }];
+const accounts = [{ id: 1234567890, balance: 5000, username: 'user1' },
+{ id: 1234567891, balance: 10000, username: 'user1'}];
 
 const usernames = ['user1', 'user2'];
 
 const bank = new Bank(accounts, usernames);
+
+// --------------------------------------------
+//              TEST CREATE ACCOUNT
+// --------------------------------------------
 
 // Scenario 1: successful account created
 const acc = bank.createAccount('user1', 20, 1234567892);
 if (acc.id !== 1234567892
     || acc.balance !== 0
     || acc.id.toString().length !== 10) {
-    console.log('Scenario 1 failed');
+    console.log('create account: Scenario 1 failed');
 }
 else {
-    console.log('Scenario 1 passed');
+    console.log('create account: Scenario 1 passed');
 }
 
 try {
     bank.createAccount('user1', 20, 1234567892);
-    console.log('Scenario 1 failed');
+    console.log('create account: Scenario 1 failed');
 }
 catch(e) {
-    console.log('Scenario 1 passed');
+    console.log('create account: Scenario 1 passed');
 }
 
 // scenario 2: unsuccessful account creation due to customer being below 18
 
 try {
     bank.createAccount('user1', 17, 1234567899);
-    console.log('Scenario 2 failed');
+    console.log('create account: Scenario 2 failed');
 }
 catch(e) {
-    console.log('Scenario 2 passed');
+    console.log('create account: Scenario 2 passed');
 }
 
 // Scenario 3: unsuccessful account creation due to invalid username
 
 try {
     bank.createAccount('user3', 20, 1234567888);
-    console.log('Scenario 3 failed');
+    console.log('create account: Scenario 3 failed');
 }
 catch(e) {
-    console.log('Scenario 3 passed');
+    console.log('create account: Scenario 3 passed');
+}
+
+
+
+// --------------------------------------------
+//              TEST DEPOSIT
+// --------------------------------------------
+
+// Scenario 1: successful deposit
+try {
+    let balance = bank.deposit('user1', 1234567890, 500);
+    if (balance !== 5500) {throw new Error();}
+    console.log('deposit: Scenario 1 passed');
+} catch(e) {
+    console.log('deposit: Scenario 1 failed');
+}
+
+// Scenario 2: unsuccessful deposit due to invalid username
+try {
+    bank.deposit('user3', 1234567890, 500);
+    console.log('deposit: Scenario 2 failed');
+} catch(e) {
+    if (e instanceof Error && e.message === 'User not found') {
+        console.log('deposit: Scenario 2 passed');
+    } else {
+        console.log('deposit: Scenario 2 failed');
+    }
+}
+
+// Scenario 3: unsuccessful deposit due to account not found
+try {
+    bank.deposit('user1', 1111111111, 500);
+    console.log('deposit: Scenario 3 failed');
+} catch(e) {
+    if (e instanceof Error && e.message === 'Account not found') {
+        console.log('deposit: Scenario 3 passed');
+    } else {
+        console.log('deposit: Scenario 3 failed');
+    }
+}
+
+// Scenario 4: unsuccessful deposit due to account not belonging to user
+try {
+    bank.deposit('user2', 1234567891, 500);
+    console.log('deposit: Scenario 4 failed');
+} catch(e) {
+    if (e instanceof Error && e.message === 'Unauthorized access') {
+        console.log('deposit: Scenario 4 passed');
+    } else {
+        console.log('deposit: Scenario 4 failed');
+    }
+}
+
+// Senario 5: unsuccessful deposit due to negative amount
+try {
+    bank.deposit('user1', 1234567891, -10);
+    console.log('deposit: Scenario 5 failed');
+} catch(e) {
+    if (e instanceof Error && e.message === 'Invalid amount, must be positive') {
+        console.log('deposit: Scenario 5 passed');
+    } else {
+        console.log('deposit: Scenario 5 failed');
+    }
 }
