@@ -187,3 +187,54 @@ try {
         console.log('withdrawal: Scenario 6 failed');
     }
 }
+
+
+
+// --------------------------------------------
+//              TEST CHECK BALANCE
+// --------------------------------------------
+
+// Scenario 1: successful check balance
+try {
+    let balance = bank.getBalance('user1', 1234567890);
+    if (balance !== 5000) {throw new Error();}
+    console.log('check balance: Scenario 1 passed');
+} catch (e) {
+    console.log('check balance: Scenario 1 failed');
+}
+
+// Scenario 2: unsuccessful check balance due to invalid username
+try {
+    bank.getBalance('user3', 1234567890);
+    console.log('check balance: Scenario 2 failed');
+} catch (e) {
+    if (e instanceof Error && e.message === 'User not found') {
+        console.log('check balance: Scenario 2 passed');
+    } else {
+        console.log('check balance: Scenario 2 failed');
+    }
+}
+
+// Scenario 3: unsuccessful check balance due to account not found
+try {
+    bank.getBalance('user1', 1111111111);
+    console.log('check balance: Scenario 3 failed');
+} catch (e) {
+    if (e instanceof Error && e.message === 'Account not found') {
+        console.log('check balance: Scenario 3 passed');
+    } else {
+        console.log('check balance: Scenario 3 failed');
+    }
+}
+
+// Scenario 4: unsuccessful check balance due to account not belonging to user
+try {
+    bank.getBalance('user2', 1234567891);
+    console.log('check balance: Scenario 4 failed');
+} catch (e) {
+    if (e instanceof Error && e.message === 'Unauthorized access') {
+        console.log('check balance: Scenario 4 passed');
+    } else {
+        console.log('check balance: Scenario 4 failed');
+    }
+}
